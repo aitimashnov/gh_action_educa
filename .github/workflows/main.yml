@@ -1,0 +1,16 @@
+name: manual-deploy
+
+# concurrency:
+#   group: push-only
+
+on:
+  workflow_dispatch:
+    inputs:
+      application_name:
+        description: 'Name of the application'
+        required: true
+        type: choice
+        options:
+          - api
+          - web
+          - analytics
