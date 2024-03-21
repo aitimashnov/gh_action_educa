@@ -41,6 +41,13 @@ jobs:
 
     steps:
       - name: ls
+        if: ${{ inputs.setup_environment_manually == 'yes' }}
         run: |
           # echo ${{ github.event.inputs.parallel_deploy }}
-          echo "Hello!"
+          echo "== yes"
+
+      - name: ls
+        if: ${{ inputs.setup_environment_manually != 'yes' }}
+        run: |
+          # echo ${{ github.event.inputs.parallel_deploy }}
+          echo "!= yes!"
