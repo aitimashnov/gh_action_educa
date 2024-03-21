@@ -47,7 +47,7 @@ jobs:
       - name: ls
         run: |
           # echo ${{ github.event.inputs.single_deploy }}
-          echo ${{ github.event }}
+          echo ${{ github.event_name }}
 
   parallel_deploy:
     if: "${{ github.event.inputs.parallel_deploy == '' }}"
