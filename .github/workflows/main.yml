@@ -22,19 +22,9 @@ on:
       single_deploy:
         description: 'Name of the application'
         required: false
-        type: choice
-        options:
-          - api
-          - web
-          - analytics
       parallel_deploy:
         description: 'Name of the group'
         required: false
-        type: choice
-        options:
-          - group1
-          - group2
-          - group3
 
 #---------------------------------------------------------------------#
 #You can use permissions to modify the default permissions granted to the GITHUB_TOKEN, adding or removing access as required, so that you only allow the minimum required access.
