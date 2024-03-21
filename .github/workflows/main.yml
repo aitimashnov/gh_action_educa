@@ -45,10 +45,10 @@ jobs:
     steps:
       - name: ls
         run: |
-          echo ${{ github.event.inputs.environment }}
+          echo ${{ github.event.inputs.single_deploy }}
 
   parallel_deploy:
-    if: "${{ github.event.inputs.single_deploy == '' }}"
+    if: "${{ github.event.inputs.parallel_deploy == '' }}"
     runs-on: ubuntu-latest
 
     steps:
