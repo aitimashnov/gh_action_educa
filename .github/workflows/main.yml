@@ -46,7 +46,8 @@ jobs:
     steps:
       - name: ls
         run: |
-          echo ${{ github.event.inputs.single_deploy }}
+          # echo ${{ github.event.inputs.single_deploy }}
+          echo "Hello!"
 
   parallel_deploy:
     if: "${{ github.event.inputs.parallel_deploy == '' }}"
