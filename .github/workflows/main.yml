@@ -69,4 +69,4 @@ jobs:
     uses: ./.github/workflows/nested.yml
     secrets: inherit
     with:
-      setup_environment_manually: "yes"
+      setup_environment_manually: 'yes'

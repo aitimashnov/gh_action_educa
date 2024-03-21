@@ -36,7 +36,7 @@ permissions:
 
 jobs:
   setup_environment:
-    if: ${{ inputs.release_type == "yes" }}
+    if: ${{ inputs.setup_environment_manually == 'yes' }}
     runs-on: ubuntu-latest
 
     steps:
