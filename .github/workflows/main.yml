@@ -4,7 +4,7 @@ name: manual-deploy
 run-name: >-
   ${{ github.event.inputs.single_deploy
     && format('Manual single deploy - app: {0}, run-id: {1}, actor {2}', inputs.single_deploy, github.run_id, github.triggering_actor )
-    || format('Manual parallel deploy - app group: {0}, run-id {1}, actor {2}', inputs.parallel_deploy, github.run_id, github.triggering_actor )
+    || format('Manual parallel deploy - app group: {0}, run-id {1}, actor {2}', inputs.parallel_deploy, github.run_id, github.triggering_actor ) }}
 
 #---------------------------------------------------------------------#
 #The queued job or workflow will be pending. Any previously pending job or workflow in the concurrency group will be canceled. 
