@@ -1,0 +1,46 @@
+name: nested
+
+#Dynamically configuring action name
+# run-name: >-
+#   ${{ github.event.inputs.single_deploy
+#     && format('Manual single deploy - app: {0}, run-id: {1}, actor {2}', inputs.single_deploy, github.run_id, github.triggering_actor )
+#     || format('Manual parallel deploy - app group: {0}, run-id {1}, actor {2}', inputs.parallel_deploy, github.run_id, github.triggering_actor ) }}
+
+#---------------------------------------------------------------------#
+#The queued job or workflow will be pending. Any previously pending job or workflow in the concurrency group will be canceled. 
+#Doc: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency
+#There is a discussion regarding this, the issue doesn't seem to be resolved yet. 
+#Concurrency Cancel Pending discussion: https://github.com/orgs/community/discussions/5435
+#---------------------------------------------------------------------#
+
+concurrency:
+  group: deploy
+
+on:
+  workflow_call:
+    inputs:
+      setup_environment_manually:
+        description: 'Is there diffetent branch?'
+        type: string
+
+#---------------------------------------------------------------------#
+#You can use permissions to modify the default permissions granted to the GITHUB_TOKEN, adding or removing access as required, so that you only allow the minimum required access.
+#Doc: https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
+#---------------------------------------------------------------------#
+
+permissions:
+  id-token: write
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  setup_environment:
+    if: ${{ inputs.release_type == "yes" }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ls
+        run: |
+          # echo ${{ github.event.inputs.parallel_deploy }}
+          echo "Hello!"
