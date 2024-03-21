@@ -14,7 +14,7 @@ name: nested
 #---------------------------------------------------------------------#
 
 concurrency:
-  group: deploy
+  group: nested
 
 on:
   workflow_call:
