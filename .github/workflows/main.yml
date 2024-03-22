@@ -1,16 +1,18 @@
 name: manual-deploy
 
-#Dynamically configuring action name
+# 1
+# Dynamically configuring action name
 run-name: >-
   ${{ github.event.inputs.single_deploy
     && format('Manual single deploy - app: {0}, run-id: {1}, actor {2}', inputs.single_deploy, github.run_id, github.triggering_actor )
     || format('Manual parallel deploy - app group: {0}, run-id {1}, actor {2}', inputs.parallel_deploy, github.run_id, github.triggering_actor ) }}
 
+# 2
 #---------------------------------------------------------------------#
-#The queued job or workflow will be pending. Any previously pending job or workflow in the concurrency group will be canceled. 
-#Doc: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency
-#There is a discussion regarding this, the issue doesn't seem to be resolved yet. 
-#Concurrency Cancel Pending discussion: https://github.com/orgs/community/discussions/5435
+# The queued job or workflow will be pending. Any previously pending job or workflow in the concurrency group will be canceled. 
+# Doc: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency
+# There is a discussion regarding this, the issue doesn't seem to be resolved yet. 
+# Concurrency Cancel Pending discussion: https://github.com/orgs/community/discussions/5435
 #---------------------------------------------------------------------#
 
 concurrency:
@@ -39,9 +41,10 @@ on:
           - group1
           - group2
 
+# 3
 #---------------------------------------------------------------------#
-#You can use permissions to modify the default permissions granted to the GITHUB_TOKEN, adding or removing access as required, so that you only allow the minimum required access.
-#Doc: https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
+# You can use permissions to modify the default permissions granted to the GITHUB_TOKEN, adding or removing access as required, so that you only allow the minimum required access.
+# Doc: https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
 #---------------------------------------------------------------------#
 
 permissions:
@@ -51,8 +54,9 @@ permissions:
   pull-requests: write
 
 jobs:
+# 4
 #---------------------------------------------------------------------#
-#Reusing workflows, Doc: https://docs.github.com/en/actions/using-workflows/reusing-workflows
+# Reusing workflows, Doc: https://docs.github.com/en/actions/using-workflows/reusing-workflows
 #---------------------------------------------------------------------#
   run_test_for_app:
     if: "${{ github.event.inputs.parallel_deploy == '' }}"
@@ -76,8 +80,9 @@ jobs:
         run: |
           echo ${{ github.event.inputs.single_deploy }}
 
+# 5
 #---------------------------------------------------------------------#
-#Run jobs in parallel using matrix strategy, Doc: https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
+# Run jobs in parallel using matrix strategy, Doc: https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
 #---------------------------------------------------------------------#
   parse_group:
     needs: [run_test_for_group]
@@ -112,8 +117,9 @@ jobs:
           echo "Group name: ${{ github.event.inputs.parallel_deploy }}"
           echo "${{ matrix.app_name }}"
 
+# 6
 #---------------------------------------------------------------------#
-#Slack Send GitHub Action, Doc: https://github.com/slackapi/slack-github-action
+# Slack Send GitHub Action, Doc: https://github.com/slackapi/slack-github-action
 #---------------------------------------------------------------------#
   notification:
     runs-on: ubuntu-latest
@@ -143,8 +149,9 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: 'qwerty' #${{ secrets.SLACK_WEBHOOK_URL }}
 
+# 7
 #---------------------------------------------------------------------#
-#Generate summary, Doc: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary
+# Generate summary, Doc: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary
 #---------------------------------------------------------------------#
   generate_summary:
     runs-on: ubuntu-latest
