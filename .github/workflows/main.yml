@@ -88,6 +88,8 @@ jobs:
       - name: Parse api group
         id: set-matrix
         run: |
+          pwd
+          ls
           matrix=$(jq -c '{include: [.${{ github.event.inputs.parallel_deploy }}[] | {app_name: .}]}' deploy-group.json)
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
           echo "deploy group name: ${{ github.event.inputs.parallel_deploy }}"
