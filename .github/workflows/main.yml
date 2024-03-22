@@ -77,6 +77,32 @@ jobs:
           echo ${{ github.event.inputs.parallel_deploy }}
 
 #---------------------------------------------------------------------#
+#Slack Send GitHub Action, Doc: https://github.com/slackapi/slack-github-action
+#---------------------------------------------------------------------#
+  # notification:
+  #   runs-on: ubuntu-latest
+  #     - name: 🎉 Notify Slack On Success
+  #       id: slack
+  #       uses: slackapi/slack-github-action@v1.18.0
+  #       with:
+  #         payload: |
+  #           {
+  #             "message": ":tada: Successfull deploying!\nRunID: ${{ github.run_id }}\nTriggered by: [https://github.com/${{ github.triggering_actor }}]"
+  #           }
+  #       env:
+  #         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  #     - name: 💀 Notify Slack On Failure
+  #       if: failure()
+  #       uses: slackapi/slack-github-action@v1.18.0
+  #       with:
+  #         payload: |
+  #           {
+  #             "message": ":skull: Failed deploying!\nRunID: ${{ github.run_id }}\nTriggered by: [https://github.com/${{ github.triggering_actor }}]"
+  #           }
+  #       env:
+  #         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+#---------------------------------------------------------------------#
 #Generate summary, Doc: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary
 #---------------------------------------------------------------------#
   generate_summary:
