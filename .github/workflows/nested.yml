@@ -22,6 +22,10 @@ on:
       application_name:
         description: 'app name to test'
         type: string
+    outputs:
+      passed_test:
+        description: "value indicating if the test has been passed"
+        value: ${{ jobs.setup_environment.outputs.passed_test }}
 
 #---------------------------------------------------------------------#
 #You can use permissions to modify the default permissions granted to the GITHUB_TOKEN, adding or removing access as required, so that you only allow the minimum required access.
@@ -37,8 +41,11 @@ permissions:
 jobs:
   run_test:
     runs-on: ubuntu-latest
+    outputs:
+      passed_test: ${{ env.PASSED_TEST }}
 
     steps:
       - name: test app
         run: |
           echo ${{ inputs.application_name }}
+          echo "PASSED_TEST=yes" >> $GITHUB_ENV
