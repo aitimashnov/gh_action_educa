@@ -81,7 +81,7 @@ jobs:
 #---------------------------------------------------------------------#
   parse_group:
     needs: [run_test_for_group]
-    if: "${{ github.event.inputs.deploy_api_group != '' }}"
+    if: "${{ github.event.inputs.single_deploy != '' }}"
     runs-on: ubuntu-latest
 
     steps:
