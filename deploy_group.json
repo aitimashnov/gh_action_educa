@@ -1,0 +1,16 @@
+{
+    "group1": [
+      "api1",
+      "web1",
+      "migration-job1",
+      "microservice1",
+      "redis1"
+    ],
+    "group2": [
+      "api2",
+      "web2",
+      "migration-job2",
+      "microservice2",
+      "redis2"
+    ]
+  }

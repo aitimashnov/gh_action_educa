@@ -25,9 +25,20 @@ on:
       single_deploy:
         description: 'Name of the application'
         required: false
+        type: choice
+        options:
+          - api
+          - web
+          - migration-job
+          - microservice
+          - redis
       parallel_deploy:
         description: 'Name of the group'
         required: false
+        type: choice
+        options:
+          - group1
+          - group2
 
 #---------------------------------------------------------------------#
 #You can use permissions to modify the default permissions granted to the GITHUB_TOKEN, adding or removing access as required, so that you only allow the minimum required access.
@@ -66,15 +77,37 @@ jobs:
         run: |
           echo ${{ github.event.inputs.single_deploy }}
 
-  parallel_deploy:
+#---------------------------------------------------------------------#
+#Run jobs in parallel using matrix strategy, Doc: https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs
+#---------------------------------------------------------------------#
+  parse_group:
     needs: [run_test_for_group]
+    if: "${{ github.event.inputs.deploy_api_group != '' }}"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Parse api group
+        id: set-matrix
+        run: |
+          matrix=$(jq -c '{include: [.${{ github.event.inputs.parallel_deploy }}[] | {app_name: .}]}' deploy-group.json)
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+          echo "deploy group name: ${{ github.event.inputs.parallel_deploy }}"
+          echo $matrix
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+  parallel_deploy:
+    needs: [run_test_for_group, parse_group]
     if: "${{ github.event.inputs.single_deploy == '' }}"
     runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.parse_group.outputs.matrix) }}
 
     steps:
       - name: echo name
         run: |
-          echo ${{ github.event.inputs.parallel_deploy }}
+          echo "Group name: ${{ github.event.inputs.parallel_deploy }}"
+          echo "${{ matrix.app_name }}"
 
 #---------------------------------------------------------------------#
 #Slack Send GitHub Action, Doc: https://github.com/slackapi/slack-github-action
