@@ -42,36 +42,53 @@ permissions:
 
 jobs:
 #---------------------------------------------------------------------#
-#Reusing workflows Doc: https://docs.github.com/en/actions/using-workflows/reusing-workflows
+#Reusing workflows, Doc: https://docs.github.com/en/actions/using-workflows/reusing-workflows
 #---------------------------------------------------------------------#
   run_test_for_app:
-    if: "${{ github.event.inputs.single_deploy == '' }}"
+    if: "${{ github.event.inputs.parallel_deploy == '' }}"
     uses: ./.github/workflows/nested.yml
     with:
       application_name: "${{ github.event.inputs.single_deploy }}"
 
   run_test_for_group:
-    if: "${{ github.event.inputs.parallel_deploy == '' }}"
+    if: "${{ github.event.inputs.single_deploy == '' }}"
     uses: ./.github/workflows/nested.yml
     with:
       application_name: "${{ github.event.inputs.parallel_deploy }}"
 
   single_deploy:
-    if: "${{ github.event.inputs.single_deploy == '' }}"
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: ls
-        run: |
-          # echo ${{ github.event.inputs.single_deploy }}
-          echo ${{ github.event_name }}
-
-  parallel_deploy:
+    needs: [run_test_for_app]
     if: "${{ github.event.inputs.parallel_deploy == '' }}"
     runs-on: ubuntu-latest
 
     steps:
-      - name: ls
+      - name: echo name
         run: |
-          # echo ${{ github.event.inputs.parallel_deploy }}
-          echo "Hello!"
+          echo ${{ github.event.inputs.single_deploy }}
+
+  parallel_deploy:
+    needs: [run_test_for_group]
+    if: "${{ github.event.inputs.single_deploy == '' }}"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: echo name
+        run: |
+          echo ${{ github.event.inputs.parallel_deploy }}
+
+#---------------------------------------------------------------------#
+#Generate summary, Doc: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary
+#---------------------------------------------------------------------#
+  generate_summary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate summary for app
+        if: "${{ github.event.inputs.parallel_deploy == '' }}"
+        run: |
+          echo "### Summary! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "${{ github.event.inputs.single_deploy }} application has been successfully deployed!" >> $GITHUB_STEP_SUMMARY
+      - name: Generate summary for group
+        if: "${{ github.event.inputs.single_deploy == '' }}"
+        run: |
+          echo "### Summary! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "${{ github.event.inputs.parallel_deploy }} group has been successfully deployed!" >> $GITHUB_STEP_SUMMARY
