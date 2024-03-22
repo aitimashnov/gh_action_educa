@@ -1,10 +1,10 @@
 name: nested
 
 #Dynamically configuring action name
-# run-name: >-
-#   ${{ github.event.inputs.single_deploy
-#     && format('Manual single deploy - app: {0}, run-id: {1}, actor {2}', inputs.single_deploy, github.run_id, github.triggering_actor )
-#     || format('Manual parallel deploy - app group: {0}, run-id {1}, actor {2}', inputs.parallel_deploy, github.run_id, github.triggering_actor ) }}
+run-name: >-
+  ${{ github.event.inputs.single_deploy
+    && format('Manual single deploy - app: {0}, run-id: {1}, actor {2}', inputs.single_deploy, github.run_id, github.triggering_actor )
+    || format('Manual parallel deploy - app group: {0}, run-id {1}, actor {2}', inputs.parallel_deploy, github.run_id, github.triggering_actor ) }}
 
 #---------------------------------------------------------------------#
 #The queued job or workflow will be pending. Any previously pending job or workflow in the concurrency group will be canceled. 
@@ -19,8 +19,8 @@ concurrency:
 on:
   workflow_call:
     inputs:
-      setup_environment_manually:
-        description: 'Is there diffetent branch?'
+      application_name:
+        description: 'app name to test'
         type: string
 
 #---------------------------------------------------------------------#
@@ -35,19 +35,10 @@ permissions:
   pull-requests: write
 
 jobs:
-  setup_environment:
-    if: ${{ inputs.setup_environment_manually == 'yes' }}
+  run_test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ls
-        if: ${{ inputs.setup_environment_manually == 'yes' }}
+      - name: test app
         run: |
-          # echo ${{ github.event.inputs.parallel_deploy }}
-          echo "== yes"
-
-      - name: ls
-        if: ${{ inputs.setup_environment_manually != 'yes' }}
-        run: |
-          # echo ${{ github.event.inputs.parallel_deploy }}
-          echo "!= yes!"
+          echo ${{ inputs.application_name }}
