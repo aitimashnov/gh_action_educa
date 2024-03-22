@@ -104,7 +104,7 @@ jobs:
     if: "${{ github.event.inputs.single_deploy == '' }}"
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{ fromJSON(needs.parse_group.outputs.matrix) }}
+      matrix: ${{ fromJSON(needs.parse_group.outputs.matrix) }} # Use matrix strategy
 
     steps:
       - name: echo name
