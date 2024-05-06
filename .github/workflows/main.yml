@@ -1,13 +1,11 @@
 name: manual-deploy
 
-# 1
 # Dynamically configuring action name
 run-name: >-
   ${{ github.event.inputs.single_deploy
     && format('Manual single deploy - app: {0}, run-id: {1}, actor {2}', inputs.single_deploy, github.run_id, github.triggering_actor )
     || format('Manual parallel deploy - app group: {0}, run-id {1}, actor {2}', inputs.parallel_deploy, github.run_id, github.triggering_actor ) }}
 
-# 2
 #---------------------------------------------------------------------#
 # The queued job or workflow will be pending. Any previously pending job or workflow in the concurrency group will be canceled. 
 # Doc: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#concurrency
@@ -41,7 +39,6 @@ on:
           - group1
           - group2
 
-# 3
 #---------------------------------------------------------------------#
 # You can use permissions to modify the default permissions granted to the GITHUB_TOKEN, adding or removing access as required, so that you only allow the minimum required access.
 # Doc: https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
@@ -54,7 +51,21 @@ permissions:
   pull-requests: write
 
 jobs:
-# 4
+#---------------------------------------------------------------------#
+# Authentication with OpenID Connect
+#---------------------------------------------------------------------#
+  s3_buket_list:
+    runs-on: ubuntu-latest
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.ARN_ROLE }}
+          role-session-name: ci-cd
+          aws-region: ${{ env.AWS_REGION }}
+      # List bucket  in  AWS s3
+      - name:  AWS S3 Ls
+        run: |
+          aws s3 ls
 #---------------------------------------------------------------------#
 # Reusing workflows, Doc: https://docs.github.com/en/actions/using-workflows/reusing-workflows
 #---------------------------------------------------------------------#
