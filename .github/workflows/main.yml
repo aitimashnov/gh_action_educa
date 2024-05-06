@@ -62,7 +62,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.ARN_ROLE }}
           role-session-name: ci-cd
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
       # List bucket  in  AWS s3
       - name:  aws s3 ls
         run: |
